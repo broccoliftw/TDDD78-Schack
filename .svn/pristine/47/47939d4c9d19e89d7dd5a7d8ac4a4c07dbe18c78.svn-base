@@ -1,0 +1,160 @@
+package schack;
+
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
+
+/**
+ * Created by eriro331 on 2014-03-12.
+ */
+public class ChessComponent extends JComponent implements BoardListener
+{
+    private Image imgBishopBlack, imgBishopWhite, imgRookWhite, imgRookBlack, imgPawnWhite, imgPawnBlack, imgKnightBlack,
+	    imgKnightWhite, imgQueenWhite, imgQueenBlack, imgKingWhite, imgKingBlack = null;
+    private Board board;
+    private static final int SQUARE_SIZE = 60;
+
+    private int posX, posY;
+    private boolean clicked;
+
+
+    public ChessComponent(final Board board) {
+	this.board = board;
+	try {
+	    imgBishopBlack = ImageIO.read(new File("src/schack/images/bishop_black.png"));
+	    imgBishopWhite = ImageIO.read(new File("src/schack/images/bishop_white.png"));
+	    imgRookWhite = ImageIO.read(new File("src/schack/images/rook_white.png"));
+	    imgRookBlack = ImageIO.read(new File("src/schack/images/rook_black.png"));
+	    imgPawnWhite = ImageIO.read(new File("src/schack/images/pawn_white.png"));
+	    imgPawnBlack = ImageIO.read(new File("src/schack/images/pawn_black.png"));
+	    imgKnightWhite = ImageIO.read(new File("src/schack/images/knight_white.png"));
+	    imgKnightBlack = ImageIO.read(new File("src/schack/images/knight_black.png"));
+	    imgQueenWhite = ImageIO.read(new File("src/schack/images/queen_white.png"));
+	    imgQueenBlack = ImageIO.read(new File("src/schack/images/queen_black.png"));
+	    imgKingWhite = ImageIO.read(new File("src/schack/images/king_white.png"));
+	    imgKingBlack = ImageIO.read(new File("src/schack/images/king_black.png"));
+
+
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	    // handle exception...
+	}
+    }
+
+    public void highlight(int x, int y) {
+	posX = (int) Math.floor(x / SQUARE_SIZE);
+	posY = (int) Math.floor(y / SQUARE_SIZE);//convert mouse coordinates to board coordinates
+	clicked = true;
+	if (board.getPieceAt(posX, posY) != null && board.getTurn() == board.getPieceAt(posX, posY).getPieceColor()) {
+	    //piece exists and it is the right player's turn
+	    repaint();
+	}
+
+    }
+
+    public void boardChanged() {
+	repaint();
+    }
+
+    @Override public Dimension getPreferredSize() {
+	super.getPreferredSize();
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	screenSize.setSize(board.getWidth() * SQUARE_SIZE + 100, board.getHeight() * SQUARE_SIZE + 10);
+	return screenSize;
+    }
+
+    @Override protected void paintComponent(final Graphics g) {
+	super.paintComponent(g);
+
+	int width = board.getWidth() * SQUARE_SIZE;
+	int height = board.getHeight() * SQUARE_SIZE;
+	g.setColor(new Color(255, 222, 173)); //Light color
+	g.fillRect(0, 0, width, height);
+	g.setColor(new Color(180, 110, 40)); //dark color
+	for (int y = 0; y < 8; y++) {  //Paints background
+	    if (y % 2 == 0) {
+		for (int x = 1; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    } else {
+		for (int x = 0; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    }
+	}
+
+	if (clicked) { //Paints highlight
+	    Piece thepiece = board.getPieceAt(posX, posY);
+
+	    g.setColor(new Color(10, 110, 40, 255));
+	    g.fillRect(posX * SQUARE_SIZE, posY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+
+	    for (int x = 0; x < board.getWidth(); x++) {
+		for (int y = 0; y < board.getHeight(); y++) {
+		    if (thepiece.testMove(posX, posY, x, y, thepiece.getPieceColor(), board)) {
+			if (thepiece.isMoveLegal(posX, posY, x, y, thepiece.getPieceColor(), board)) {
+
+			    g.setColor(new Color(0, 255, 255, 125));
+			    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+
+			}
+		    }
+		}
+	    }
+	    clicked = false;
+	}
+
+
+	for (int x = 0; x < board.getWidth(); x++) { //Paints pieces
+	    for (int y = 0; y < board.getHeight(); y++) {
+		Piece currentPiece = board.getPieceAt(x, y);
+		if (currentPiece instanceof Bishop) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgBishopWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgBishopBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		} else if (currentPiece instanceof King) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgKingWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgKingBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		} else if (currentPiece instanceof Knight) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgKnightWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgKnightBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		} else if (currentPiece instanceof Pawn) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgPawnWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgPawnBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		} else if (currentPiece instanceof Queen) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgQueenWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgQueenBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		} else if (currentPiece instanceof Rook) {
+		    if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			g.drawImage(imgRookWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    } else g.drawImage(imgRookBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		}
+
+
+	    }
+	}
+
+	PieceColor turn = board.getTurn();
+	if (turn == PieceColor.WHITE) {
+	    g.drawString("WHITE", (SQUARE_SIZE * board.getWidth() + 10), 50);
+	} else {
+	    g.drawString("BLACK", (SQUARE_SIZE * board.getWidth() + 10), 50);
+	    //svarts tur
+	}
+    }
+
+}
+

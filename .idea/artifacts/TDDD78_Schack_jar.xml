@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="TDDD78-Schack:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TDDD78_Schack_jar</output-path>
+    <root id="archive" name="TDDD78-Schack.jar">
+      <element id="module-output" name="TDDD78-Schack" />
+    </root>
+  </artifact>
+</component>

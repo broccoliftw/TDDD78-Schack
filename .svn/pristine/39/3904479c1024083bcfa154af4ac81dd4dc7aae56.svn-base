@@ -1,0 +1,18 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class King extends AbstractPiece
+{
+    @Override public void movePiece() {
+    }
+
+    @Override public void placePiece(int x, int y, PieceColor color, Piece piece) {
+	this.setX(x);
+	this.setY(y);
+	this.setPieceColor(color);
+	Piece[][] myboard = Board.getBoard();
+	myboard[x][y] = piece;
+    }
+}

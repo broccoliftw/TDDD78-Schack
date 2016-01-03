@@ -1,0 +1,20 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public final class MainClass
+{
+
+    private MainClass() {
+    }
+
+    public static void main(String[] args) {
+	Board myBoard = new Board();
+	myBoard.fillBoard();
+	//ChessTextViewer.convertToText(myBoard);
+
+	ChessFrame frame = new ChessFrame(myBoard);
+
+    }
+}

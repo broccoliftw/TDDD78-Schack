@@ -1,0 +1,39 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public final class BoardTest
+{
+
+    private BoardTest() {}
+
+    public static void main(String[] args) {
+	Board myBoard = new Board();
+	myBoard.fillBoard();
+	ChessTextViewer.convertToText(myBoard);
+	System.out.println("-----------------------");
+
+
+	int x = 1;
+	int y = 1;
+	Piece thepiece =  myBoard.getPieceAt(x,y);
+	thepiece.movePiece(x,y,2,2,thepiece.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	thepiece.movePiece(2,2,2,3,thepiece.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+
+
+
+	//System.out.println(myBoard.getPieceAt(4, 4).getPieceColor());
+
+	//Piece a = (myBoard.getPieceAt(4, 4));
+	//System.out.println(a.getPieceColor());
+
+
+    }
+
+}

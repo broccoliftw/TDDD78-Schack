@@ -1,0 +1,19 @@
+package schack;
+
+import java.util.ArrayList;
+
+/**
+ * Created by eriro331 and antro937 on 2014-03-06.
+ */
+public class Board
+{
+    private final int width;
+    private final int height;
+    private Board board;
+
+    public Board(){
+	this.width = 8;
+	this.height = 8;
+	this.board =
+    }
+}

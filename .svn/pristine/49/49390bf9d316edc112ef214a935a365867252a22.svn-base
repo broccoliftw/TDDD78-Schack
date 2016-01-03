@@ -1,0 +1,15 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class Knight extends AbstractPiece
+{
+    @Override public void movePiece() {
+
+    }
+
+    @Override public void placePiece(final int x, final int y, final PieceColor color, final Piece piece) {
+
+    }
+}

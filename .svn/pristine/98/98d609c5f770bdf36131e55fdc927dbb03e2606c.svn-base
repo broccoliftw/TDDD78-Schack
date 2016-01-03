@@ -1,0 +1,86 @@
+package schack;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+/**
+ * Created by Wilhelm on 2014-03-11.
+ */
+public class ChessFrame extends JFrame implements MouseListener
+{
+    private JFrame frame;
+    int x, y;
+    int newX, newY;
+    int clickCount = 0;
+    private Board board;
+    private ChessComponent comp;
+
+    ChessFrame(Board board) {
+	super("Chess");
+	final JFrame frame = new JFrame("Chess!");
+	this.frame = frame;
+	createMenus();
+	comp = new ChessComponent(board);
+	board.addBoardListener(comp);
+	comp.addMouseListener(this);
+	frame.add(comp, BorderLayout.CENTER);
+	frame.pack();
+	frame.setVisible(true);
+	this.board = board;
+    }
+
+
+    private void createMenus() {
+	final JMenu file = new JMenu("File");
+	file.addSeparator();
+	JMenuItem exit = file.add(new JMenuItem("Exit"));
+	exit.addActionListener(new ActionListener()
+	{
+	    @Override public void actionPerformed(final ActionEvent e) {
+		int option = JOptionPane.showConfirmDialog(null, "Exit?", "Choose", JOptionPane.YES_NO_OPTION);
+		if (option == JOptionPane.YES_OPTION) System.exit(0);
+	    }
+	});
+
+	file.add(exit);
+	final JMenuBar bar = new JMenuBar();
+	bar.add(file);
+	frame.setJMenuBar(bar);
+    }
+
+    @Override public void mouseClicked(final MouseEvent e) {
+	if (SwingUtilities.isLeftMouseButton(e) && clickCount == 0) {
+	    x = e.getX();
+	    y = e.getY();
+	    clickCount++;
+	    comp.highlight(x,y);
+	    //highlight possible moves
+	} else if (SwingUtilities.isLeftMouseButton(e) && clickCount == 1) {
+	    newX = e.getX();
+	    newY = e.getY();
+	    clickCount--;
+	    board.moveRequest(x,y,newX,newY,board);
+	}
+    }
+
+    @Override public void mousePressed(final MouseEvent e) {
+
+    }
+
+    @Override public void mouseReleased(final MouseEvent e) {
+
+    }
+
+    @Override public void mouseEntered(final MouseEvent e) {
+
+    }
+
+    @Override public void mouseExited(final MouseEvent e) {
+
+    }
+}

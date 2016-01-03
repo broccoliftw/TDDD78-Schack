@@ -1,0 +1,26 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class King extends AbstractPiece
+{
+    public King(PieceColor color) {
+	switch(color){
+	    case WHITE:
+		placePiece(4,7,color);
+		break;
+	    case BLACK:
+		placePiece(4,0,color);
+		break;
+	}
+    }
+
+    @Override public void movePiece() {
+
+    }
+
+    @Override public void placePiece(int x, int y, PieceColor color) {
+
+    }
+}

@@ -1,0 +1,28 @@
+package schack;
+
+
+/**
+ * Created by eriro331 and antro937 on 2014-03-06.
+ */
+public class Board
+{
+    private final int width;
+    private final int height;
+
+    private static Piece[][] board = null;
+
+    public Board(){
+	this.width = 8;
+	this.height = 8;
+	board = new Piece[8][8];
+    }
+
+    public static Piece[][] getBoard() {
+	return board;
+    }
+
+    public Piece getPieceAt(int x, int y){
+	return board[x][y];
+
+    }
+}

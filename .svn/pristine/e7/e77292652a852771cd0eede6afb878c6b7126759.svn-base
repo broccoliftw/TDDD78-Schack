@@ -1,0 +1,88 @@
+package schack;
+
+
+import java.util.Arrays;
+
+/**
+ * Created by eriro331 and antro937 on 2014-03-06.
+ */
+public class Board
+{
+    private final int width;
+    private final int height;
+    private final static int BOARDSIZE = 8;
+
+    private Piece[][] board = null;
+
+    public Board(){
+	this.width = BOARDSIZE;
+	this.height = BOARDSIZE;
+	board = new Piece[BOARDSIZE][BOARDSIZE];
+    }
+
+    public Piece[][] getBoard() {
+	return board;
+    }
+
+    public Piece getPieceAt(int x, int y){
+	return board[x][y];
+
+    }
+    public void fillBoard(){
+    	//fyller brädet med pjäser första gången
+
+    	//fills with pawns
+    	for (int x = 0; x < 8; x++){
+    	    Pawn pawnBlack = new Pawn();
+	    pawnBlack.placePiece(x, 1, PieceColor.BLACK, pawnBlack, board);
+    	    Pawn pawnWhite = new Pawn();
+	    pawnWhite.placePiece(x, 6, PieceColor.WHITE, pawnWhite, board);
+    	}
+    	//fills with rooks
+    	for (int x = 0; x<8; x+=7){
+    	    Rook rookBlack = new Rook();
+	    rookBlack.placePiece(x, 0, PieceColor.BLACK, rookBlack, board);
+    	    Rook rookWhite = new Rook();
+	    rookWhite.placePiece(x, 7, PieceColor.WHITE, rookWhite, board);
+    	}
+    	//fills with knights
+    	for (int x = 1; x<7; x+=5){
+    	    Knight knightBlack = new Knight();
+	    knightBlack.placePiece(x, 0, PieceColor.BLACK, knightBlack, board);
+    	    Knight knightWihte = new Knight();
+	    knightWihte.placePiece(x, 7, PieceColor.WHITE, knightWihte, board);
+    	}
+    	//fills with bishops
+    	for (int x = 2; x<7; x+=3){
+    	    Bishop bishopBlack = new Bishop();
+	    bishopBlack.placePiece(x, 0, PieceColor.BLACK, bishopBlack, board);
+    	    Bishop bishopWhite = new Bishop();
+	    bishopWhite.placePiece(x, 7, PieceColor.WHITE, bishopWhite, board);
+    	}
+    	King kingBlack = new King();
+    	kingBlack.placePiece(4,0,PieceColor.BLACK,kingBlack, board);
+    	King kingWhite = new King();
+    	kingWhite.placePiece(4,7,PieceColor.WHITE,kingWhite, board);
+
+    	Queen queenBlack = new Queen();
+    	queenBlack.placePiece(3,0,PieceColor.BLACK,queenBlack, board);
+    	Queen queenWhite = new Queen();
+    	queenWhite.placePiece(3,7,PieceColor.WHITE,queenWhite, board);
+
+        }
+
+
+    public int getWidth() {
+	return width;
+    }
+
+    public int getHeight() {
+	return height;
+    }
+
+    /*@Override public String toString() {
+    	           	return "Board{" +
+    	           	       "board=" + Arrays.deepToString(board) + "\n" +
+    	           	       "}\n";
+        }*/
+}

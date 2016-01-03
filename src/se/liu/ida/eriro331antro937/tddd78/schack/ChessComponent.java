@@ -1,0 +1,219 @@
+package se.liu.ida.eriro331antro937.tddd78.schack;
+
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+
+
+/**
+ * Created by eriro331 on 2014-03-12.
+ */
+public class ChessComponent extends JComponent implements BoardListener
+{
+    private Image imgBishopBlack = null, imgBishopWhite = null, imgRookWhite = null, imgRookBlack = null, imgPawnWhite = null,
+	    imgPawnBlack = null, imgKnightBlack = null, imgKnightWhite = null, imgQueenWhite = null, imgQueenBlack = null,
+	    imgKingWhite = null, imgKingBlack = null;
+    private Board board;
+    private static final int SQUARE_SIZE = 60;
+    private int posX, posY;
+    private boolean clicked;
+
+
+    /**the folder where we store the images*/
+    public static final String IMAGE_FOLDER = "images";
+
+    /**the FileSeparator used for the path of the images*/
+    public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+
+    public ChessComponent(final Board board) {
+	this.board = board;
+
+
+	// reads the files used for representing the pieces.
+
+	try {
+	    imgBishopBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "bishop_black.png")));
+	    imgBishopWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "bishop_white.png")));
+	    imgRookWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "rook_white.png")));
+	    imgRookBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "rook_black.png")));
+	    imgPawnWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "pawn_white.png")));
+	    imgPawnBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "pawn_black.png")));
+	    imgKnightWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "knight_white.png")));
+	    imgKnightBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "knight_black.png")));
+	    imgQueenWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "queen_white.png")));
+	    imgQueenBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "queen_black.png")));
+	    imgKingWhite = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "king_white.png")));
+	    imgKingBlack = ImageIO.read((MainClass.class.getResource(IMAGE_FOLDER + FILE_SEPARATOR + "king_black.png")));
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+
+
+    }
+
+
+    public void highlight(int x, int y) {//highlights targeted piece and it's possible moves
+
+	posX = (int) Math.floor((double) x / SQUARE_SIZE);
+	posY = (int) Math.floor((double) y / SQUARE_SIZE);//convert mouse coordinates to board coordinates
+
+
+	if (x < 0 || y < 0 || posX >= board.getWidth() || posY >= board.getHeight()) {
+	    clicked = false;
+	    repaint();
+	} else if (board.hasPieceAt(posX, posY) && board.getTurn() == board.getPieceAt(posX, posY).getPieceColor()) {
+	    //piece exists and it is the right player's turn
+	    clicked = true;
+	    repaint();
+	}
+
+    }
+
+    public void boardChanged() {
+	repaint();
+    }
+
+    @Override public Dimension getPreferredSize() {
+	super.getPreferredSize();
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	screenSize.setSize(board.getWidth() * SQUARE_SIZE + 100, board.getHeight() * SQUARE_SIZE + 10);
+	return screenSize;
+    }
+
+    @Override protected void paintComponent(final Graphics g) {// paints Board, pieces and if clicked = true, also highlights.
+	super.paintComponent(g);
+
+	paintBoard(g);
+
+	if (clicked) { //Paints highlight
+	    paintHighlight(g);
+	}
+	if (board.isCheck()) {
+	    highlightKing(g);
+	}
+	//check = false; //Resets check so i does not redraw the kings highlight, check need to be static due to the
+	// fact that it needs to be changed from the abstractpiece class when it finds a check,
+	// the abstractpiece should not have a ChessComponent object
+
+	paintPieces(g);
+	paintTurnText(g);
+
+    }
+
+    private void paintBoard(final Graphics g) {
+	int width = board.getWidth() * SQUARE_SIZE;
+	int height = board.getHeight() * SQUARE_SIZE;
+	g.setColor(new Color(255, 222, 173));//RBG code for the color we want
+	g.fillRect(0, 0, width, height);
+	g.setColor(new Color(180, 110, 40));//RBG code for the color we want
+	for (int y = 0; y < 8; y++) {  //Paints background
+	    if (y % 2 == 0) {
+		for (int x = 1; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    } else {
+		for (int x = 0; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    }
+	}
+    }
+
+    private void paintTurnText(final Graphics g) {
+	g.setColor(new Color(0, 0, 0, 255));//RBG code for the color we want
+	g.drawString(board.getTurn().toString() + " PLAYER", (SQUARE_SIZE * board.getWidth() + 10), 15);// the position on
+	// the screen we want it to be drawn at
+
+    }
+
+    private void highlightKing(final Graphics g) {
+	if (board.getTurn() == PieceColor.WHITE) {
+	    int x = board.getKingWhite().getX();
+	    int y = board.getKingWhite().getY();
+	    g.setColor(new Color(244, 61, 35, 255));//RBG code for the color we want
+	    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+
+	} else {
+	    int x = board.getKingBlack().getX();
+	    int y = board.getKingBlack().getY();
+	    g.setColor(new Color(244, 61, 35, 255));//RBG code for the color we want
+	    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+	}
+
+    }
+
+    private void paintPieces(final Graphics g) {//Paints pieces (Picture specific for piecetype and color
+	for (int x = 0; x < board.getWidth(); x++) {
+	    for (int y = 0; y < board.getHeight(); y++) {
+		Piece currentPiece = board.getPieceAt(x, y);
+
+		if (currentPiece != null) {
+
+		    if (currentPiece.getType() == PieceType.BISHOP) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgBishopWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgBishopBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		    } else if (currentPiece.getType() == PieceType.KING) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgKingWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgKingBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		    } else if (currentPiece.getType() == PieceType.KNIGHT) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgKnightWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgKnightBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		    } else if (currentPiece.getType() == PieceType.PAWN) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgPawnWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgPawnBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		    } else if (currentPiece.getType() == PieceType.QUEEN) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgQueenWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgQueenBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+
+		    } else if (currentPiece.getType() == PieceType.ROOK) {
+			if (currentPiece.getPieceColor() == PieceColor.WHITE) {
+			    g.drawImage(imgRookWhite, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+			} else g.drawImage(imgRookBlack, x * SQUARE_SIZE, y * SQUARE_SIZE, null);
+		    }
+
+		}
+	    }
+	}
+    }
+
+    private void paintHighlight(final Graphics g) {
+	Piece thepiece = board.getPieceAt(posX, posY);
+
+	g.setColor(new Color(10, 110, 40, 255));//RBG code for the color we want
+	g.fillRect(posX * SQUARE_SIZE, posY * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+
+	for (int x = 0; x < board.getWidth(); x++) {
+	    for (int y = 0; y < board.getHeight(); y++) {
+		if (thepiece.testMove(posX, posY, x, y, board)) {
+		    if (thepiece.isMoveLegal(posX, posY, x, y, board)) {
+
+			if (thepiece.getType() != PieceType.KING ||
+			    thepiece.testCastling(posX, posY, x, y, board, thepiece.getPieceColor(),
+						  thepiece)) {//enables highlighting on special move "Castling"
+
+			    g.setColor(new Color(0, 255, 255, 125));//RBG code for the color we want
+			    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+			}
+
+
+		    }
+		}
+	    }
+	}
+	clicked = false; //highligthing is done, do not need to repaint it unless use retargets a piece
+    }
+
+}
+

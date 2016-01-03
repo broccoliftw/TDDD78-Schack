@@ -1,0 +1,51 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class King extends AbstractPiece
+{
+    private int x,y;
+
+
+    @Override
+    public boolean isMoveLegal(final int oldX, final int oldY, final int newX, final int newY, final PieceColor color,
+			       Board board)
+    {
+
+	if ((oldX == newX && Math.abs(oldY - newY) == 1) || (oldY == newY && Math.abs(oldX - newX) == 1)) {
+	    //Move is vertical or horisontal and only 1 step
+	    if (board.getPieceAt(newX, newY) != null) { //There is a targetpiece
+		if (board.getPieceAt(newX, newY).getPieceColor() != color) { //Targetpiece is enemypiece
+		    return true;
+		} else return false; //Targetpiece is same color
+	    } else {
+		return true; //No targetpiece
+	    }
+	}
+	else if ((oldY - newY) == 0) return false;
+	else if (Math.abs(Math.ceil(oldX - newX) / Math.ceil(oldY - newY)) > 1){
+	    return false;}
+	else if (Math.abs((oldX - newX) / (oldY - newY)) == 1 && (Math.abs(oldX - newX) == 1)) {
+	    //move is diagonal and only 1 step
+	    if (board.getPieceAt(newX, newY) != null) {//piece at target location
+		if (board.getPieceAt(newX, newY).getPieceColor() != color) {//enemy piece
+		    return true;
+		}
+		return false;
+	    }
+	    return true;
+	}
+	return false;
+    }
+
+
+    @Override public String toString() {
+	return "K  ";
+    }
+
+
+}
+
+
+

@@ -1,0 +1,22 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public interface Piece
+{
+    public void movePiece();
+
+    public void placePiece(int x,int y, PieceColor color, Piece piece,Piece[][] board);
+
+    public PieceColor getPieceColor();
+
+    public int getX();
+
+    public int getY();
+
+    public void setX(final int x);
+
+    public void setY(final int y);
+
+}

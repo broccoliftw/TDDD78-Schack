@@ -1,0 +1,18 @@
+package se.liu.ida.eriro331antro937.tddd78.schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public final class MainClass
+{
+
+    private MainClass() {
+    }
+
+    public static void main(String[] args) {
+	Board myBoard = new Board();
+	myBoard.fillBoard();
+	ChessFrame frame = new ChessFrame(myBoard); // Creates the frame (needed)
+	}
+
+}

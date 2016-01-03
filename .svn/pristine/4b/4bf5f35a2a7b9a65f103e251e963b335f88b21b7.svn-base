@@ -1,0 +1,84 @@
+package schack;
+
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class Pawn extends AbstractPiece
+{
+    //private int[][] offset = { { 1, 0 }, { 2, 0 }, { 1, 1 }, { 1, -1 } }; //designbeslut
+    //private int offsetlength = 4;
+
+    @Override
+    public boolean isMoveLegal(final int oldX, final int oldY, final int newX, final int newY, final PieceColor color,
+			       Board board)
+    {
+	if (color == PieceColor.BLACK) {
+	    if (((oldX - newX) == 1 || (oldX - newX) == -1) && (newY - oldY == 1)) { //Pawn tries to take another Piece
+		if ((board.getPieceAt(newX, newY) != null) &&
+		    (board.getPieceAt(newX, newY).getPieceColor() != color)) { //Targetpiece is enemypiece
+		    return true;
+		}
+		return false;
+	    } else if (oldX == newX) { //Walks forward
+		if (oldY == 1) { //Pawn stands at startposition
+		    if (newY - oldY > 0 && newY - oldY <= 2) {//Able to move forward
+			if (!checkCollision(oldX, oldY, newX, newY+1, board)) {
+			    return true;
+			}
+		    }
+		    return false;
+
+		} else { //Not startposition
+		    if (newY - oldY == 1) {//Able to move forward
+			if (!checkCollision(oldX, oldY, newX, newY+1, board)) {
+			    return true;
+			}
+		    }
+		}
+	    }
+	    return false;
+	} else if (color == PieceColor.WHITE) {
+	    if (((oldX - newX) == 1 || (oldX - newX) == -1) && (newY - oldY == -1)) { //Pawn tries to take another Piece
+		if ((board.getPieceAt(newX, newY) != null) &&
+		    (board.getPieceAt(newX, newY).getPieceColor() != color)) { //Targetpiece is enemypiece
+		    return true;
+		}
+		return false;
+	    } else if (oldX == newX) { //Walks forward
+		if (oldY == 6) { //Pawn stands at startposition
+		    if (newY - oldY < 0 && newY - oldY >= -2) {//Able to move forward
+			if (!checkCollision(oldX, oldY, newX, newY-1, board)) {
+			    return true;
+			}
+		    }
+		    return false;
+
+		} else { //Not startposition
+		    if (newY - oldY == -1) {//Able to move forward
+			if (!checkCollision(oldX, oldY, newX, newY-1, board)) {
+			    return true;
+			}
+		    }
+		}
+	    }
+	    return false;
+	}
+
+
+	return false;
+    }
+
+    @Override public String toString() {
+	return "P  ";
+    }
+
+   // public boolean checkOffset(int x, int y) {
+	//for (int i = 0; i < offsetlength; i++) {
+	//    if (offset[i][0] == x && offset[i][1] == y) {
+	//	return true;
+	//    }
+	//}
+//	return false;
+  //  }
+}

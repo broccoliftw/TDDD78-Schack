@@ -1,0 +1,36 @@
+package se.liu.ida.eriro331antro937.tddd78.schack;
+
+/**
+ * Created by eriro331 on 2014-03-07.
+ */
+public final class ChessTextViewer
+{
+    private ChessTextViewer() {}
+
+// --Commented out by Inspection START (2014-04-14 18:13):
+//    public static void convertToText(Board board) {
+//	//int n = 0;
+//	StringBuilder sb = new StringBuilder();
+//	for (int y = 0; y < board.getHeight(); y++) {
+//	    for (int x = 0; x < board.getWidth(); x++) {
+//		if (board.getPieceAt(x, y) == null) {
+//		    sb.append("   ");
+//		} else {
+//		    sb.append(board.getPieceAt(x, y));
+//		}
+//
+//
+//	    }
+//	    //sb.append(n);
+//	    // n++;
+//	    sb.append("\n");
+//	}
+//	//sb.append(" ");
+//	// for (int i = 0; i < board.getWidth(); i++){
+//	// sb.append("  " + i);
+//	// }
+//	System.out.println(sb.toString());
+//    }
+// --Commented out by Inspection STOP (2014-04-14 18:13)
+
+}

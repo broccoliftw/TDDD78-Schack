@@ -1,0 +1,80 @@
+package schack;
+
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
+
+/**
+ * Created by eriro331 on 2014-03-12.
+ */
+public class ChessComponent extends JComponent
+{
+    private Image imgBishopBlack, imgBishopWhite, imgRookWhite, imgRookBlack, imgPawnWhite, imgPawnBlack, imgKnightBlack,
+	    imgKnightWhite, imgQueenWhite, imgQueenBlack, imgKingWhite, imgKingBlack = null;
+    private Board board;
+    private static final int SQUARE_SIZE = 100;
+
+    public ChessComponent(final Board board) {
+	this.board = board;
+	try {
+	    imgBishopBlack = ImageIO.read(new File("src/schack/images/bishop_black.png"));
+	    imgBishopWhite = ImageIO.read(new File("src/schack/images/bishop_white.png"));
+	    imgRookWhite = ImageIO.read(new File("src/schack/images/rook_white.png"));
+	    imgRookBlack = ImageIO.read(new File("src/schack/images/rook_black.png"));
+	    imgPawnWhite = ImageIO.read(new File("src/schack/images/pawn_white.png"));
+	    imgPawnBlack = ImageIO.read(new File("src/schack/images/pawn_black.png"));
+	    imgKnightWhite = ImageIO.read(new File("src/schack/images/knight_white.png"));
+	    imgKnightBlack = ImageIO.read(new File("src/schack/images/knight_black.png"));
+	    imgQueenWhite = ImageIO.read(new File("src/schack/images/queen_white.png"));
+	    imgQueenBlack = ImageIO.read(new File("src/schack/images/queen_black.png"));
+	    imgKingWhite = ImageIO.read(new File("src/schack/images/king_white.png"));
+	    imgKingBlack = ImageIO.read(new File("src/schack/images/king_black.png"));
+
+
+	} catch (IOException ex) {
+	    // handle exception...
+	}
+    }
+
+
+    @Override public Dimension getPreferredSize() {
+	super.getPreferredSize();
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	screenSize.setSize(screenSize.getWidth() - 100, screenSize.getHeight() - 100);
+	return screenSize;
+    }
+
+    @Override protected void paintComponent(final Graphics g) {
+	super.paintComponent(g);
+
+	int width = board.getWidth() * SQUARE_SIZE;
+	int height = board.getHeight() * SQUARE_SIZE;
+	g.setColor(new Color(255, 222, 173)); //Ljus fäg
+	g.fillRect(0, 0, width, height);
+	g.setColor(new Color(180, 110, 40)); //Mörk färg
+	for (int y = 0; y < 8; y++) {
+	    if (y % 2 == 0) {
+		for (int x = 1; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    } else {
+		for (int x = 0; x < 8; x += 2) {
+		    g.fillRect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+		}
+	    }
+
+	    //om y jämn börjar raden med vit ruta
+	    //annars svart
+
+	}
+	g.drawImage(imgKingBlack, 0, 0, null);
+	g.drawImage(imgKingWhite, 200, 100, null);
+	g.drawImage(imgPawnBlack, 100, 100, null);
+    }
+
+}
+

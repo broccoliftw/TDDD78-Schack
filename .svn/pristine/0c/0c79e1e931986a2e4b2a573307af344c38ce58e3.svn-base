@@ -1,0 +1,9 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-26.
+ */
+public enum PieceType
+{
+    KING,QUEEN,ROOK,KNIGHT,BISHOP,PAWN
+}

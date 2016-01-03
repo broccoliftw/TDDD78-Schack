@@ -1,0 +1,166 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public final class BoardTest
+{
+
+    private BoardTest() {
+    }
+
+    public static void main(String[] args) {
+	Board myBoard = new Board();
+	myBoard.fillBoard();
+	//ChessTextViewer.convertToText(myBoard);
+
+	ChessFrame frame = new ChessFrame(myBoard);
+
+	/*
+	pawntest(myBoard);
+
+	Piece theKnight = myBoard.getPieceAt(1, 0);
+	theKnight.movePiece(1, 0, 2, 2, theKnight.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+
+	theKnight.movePiece(2, 2, 3, 4, theKnight.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theKnight.movePiece(3, 4, 5, 5, theKnight.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theKnight.movePiece(5, 5, 3, 4, theKnight.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+
+
+
+	//Bishoptest
+	System.out.println("-----------------------");
+	Piece theBishop = myBoard.getPieceAt(2, 0);
+	theBishop.movePiece(2, 0, 4, 2, theBishop.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theBishop.movePiece(2, 0, 0, 2, theBishop.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	myBoard.setPieceAt(1, 1, null);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theBishop.movePiece(2, 0, 0, 2, theBishop.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theBishop.movePiece(0, 2, 1, 3, theBishop.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	myBoard.setPieceAt(3, 1, null);
+
+	System.out.println("-----------------------");
+	theBishop.movePiece(1, 3, 3, 1, theBishop.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	Piece thepiece = myBoard.getPieceAt(2, 1);
+	thepiece.movePiece(2, 1, 2, 3, thepiece.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	//System.out.println(myBoard.getPieceAt(4, 4).getPieceColor());
+
+	//Piece a = (myBoard.getPieceAt(4, 4));
+	//System.out.println(a.getPieceColor());
+
+	//Rooktest
+
+
+	 rooktest(myBoard);
+
+
+	 //KingTest
+	 System.out.println("-----------------------");
+	 myBoard.setPieceAt(4, 6, null);
+	 myBoard.setPieceAt(3, 6, null);
+
+	 Piece theKing = myBoard.getPieceAt(4, 7);
+	 theKing.movePiece(4, 7, 4, 6, theKing.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 System.out.println("-----------------------");
+	 theKing.movePiece(4, 6, 3, 5, theKing.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 System.out.println("-----------------------");
+	 theKing.movePiece(3, 5, 2, 6, theKing.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 System.out.println("-------------------------");
+	 theKing.movePiece(2, 6, 1, 6, theKing.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 //queentest
+	 System.out.println("-------------------------");
+	 Piece theQueen = myBoard.getPieceAt(3, 7);
+	 theQueen.movePiece(3, 7, 6, 4, theQueen.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 System.out.println("-------------------------");
+	 theQueen.movePiece(6, 4, 6, 1, theQueen.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	 System.out.println("-------------------------");
+	 theQueen.movePiece(6, 1, 5, 0, theQueen.getPieceColor(), myBoard);
+	 ChessTextViewer.convertToText(myBoard);
+
+	*/
+    }
+
+    private static void rooktest(final Board myBoard) {
+	System.out.println("-----------------------");
+	myBoard.setPieceAt(0, 1, null);
+	Piece theRook = myBoard.getPieceAt(0, 0);
+	theRook.movePiece(0, 0, 0, 3, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theRook.movePiece(0, 3, 0, 6, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theRook.movePiece(0, 6, 1, 6, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theRook = myBoard.getPieceAt(0, 7);
+	theRook.movePiece(0, 7, 0, 3, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theRook.movePiece(0, 3, 2, 4, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+	System.out.println("-----------------------");
+	theRook.movePiece(7, 7, 7, 4, theRook.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+    }
+
+    private static void pawntest(final Board myBoard) {
+	int x = 1;
+	int y = 1;
+	Piece thepiece = myBoard.getPieceAt(x, y);
+	thepiece.movePiece(x, y, 2, 2, thepiece.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+
+	System.out.println("-----------------------");
+	thepiece.movePiece(2, 2, 2, 3, thepiece.getPieceColor(), myBoard);
+	ChessTextViewer.convertToText(myBoard);
+
+    }
+
+}

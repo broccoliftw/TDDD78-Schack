@@ -1,0 +1,446 @@
+package schack;
+import javax.swing.*;
+
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public abstract class AbstractPiece implements Piece
+{
+    private int x;
+    private int y;
+    private PieceColor pieceColor = null;
+    private PieceType type = null;
+    private boolean moved = false;
+
+    public int getX() {
+	return x;
+    }
+
+    public int getY() {
+	return y;
+    }
+
+    public PieceType getType() {
+	return type;
+    }
+
+    public PieceColor getPieceColor() {
+	return pieceColor;
+    }
+
+    public void setType(final PieceType type) {
+	this.type = type;
+    }
+
+    public void setPieceColor(final PieceColor pieceColor) {
+	this.pieceColor = pieceColor;
+    }
+
+    public void setX(final int x) {
+	this.x = x;
+    }
+
+    public void setY(final int y) {
+	this.y = y;
+    }
+
+    public void setMoved(final boolean moved) {
+	this.moved = moved;
+    }
+
+    public boolean isMoved() {
+	return moved;
+    }
+    //public void placePiece(int x, int y, PieceColor color, Piece piece, Piece[][] board) {
+    //this.x = x;
+    //this.y = y;
+    //this.pieceColor = color;
+    //board[x][y] = piece;
+    //}
+
+    public boolean checkForPatt(PieceColor color, Board board) {
+	for (int x = 0; x < board.getWidth(); x++) {
+	    for (int y = 0; y < board.getHeight(); y++) {
+		Piece thepiece = board.getPieceAt(x, y);
+		if (thepiece != null && thepiece.getPieceColor() == color) {
+		    for (int i = 0; i < board.getWidth(); i++) {
+			for (int j = 0; j < board.getWidth(); j++) {
+			    if (thepiece.testMove(x, y, i, j, board) && thepiece.isMoveLegal(x, y, i, j, board)) {
+				return false;
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	return true;
+    }
+
+    public boolean testMove(final int oldX, final int oldY, final int newX, final int newY, Board board) {
+	if (board.getPieceAt(oldX, oldY) != null) {
+	    PieceColor color = board.getPieceAt(oldX, oldY).getPieceColor();
+	    Piece pieceAtStartPos = board.getPieceAt(oldX, oldY);
+	    //om kung
+	    //Uppdatera Kingpointer
+	    Piece pieceAtEndPos = board.getPieceAt(newX, newY);
+
+
+	    board.setPieceAt(newX, newY, (board.getPieceAt(oldX, oldY)));
+	    board.setPieceAt(oldX, oldY, null);
+
+	    if (checkForCheck(color, board)) {
+		board.setPieceAt(oldX, oldY, pieceAtStartPos);
+		board.setPieceAt(newX, newY, pieceAtEndPos);
+		return false;
+	    }
+
+	    board.setPieceAt(oldX, oldY, pieceAtStartPos);
+	    board.setPieceAt(newX, newY, pieceAtEndPos);
+
+	    return true;
+	}
+	return false;
+    }
+
+    public void movePiece(final int oldX, final int oldY, final int newX, final int newY, Board board) {
+	PieceColor turn = board.getTurn();
+	PieceColor color = board.getPieceAt(oldX, oldY).getPieceColor();
+	if (board.getPieceAt(oldX, oldY).isMoveLegal(oldX, oldY, newX, newY, board) && color == turn) {
+	    Piece pieceAtStartPos = board.getPieceAt(oldX, oldY);
+	    Piece pieceAtEndPos = board.getPieceAt(newX, newY);
+
+
+	    if (!isCastling(oldX, oldY, newX, board, color, pieceAtStartPos)) {
+		board.setPieceAt(newX, newY, (board.getPieceAt(oldX, oldY)));
+		board.setPieceAt(oldX, oldY, null);
+
+		if (checkForCheck(color, board)) { //Move is not legal, reset piece
+		    if (pieceAtStartPos.getType() == PieceType.KING && oldX == 4 && newX == 6) {//rokad right
+			if (color == PieceColor.BLACK) {
+			    board.setPieceAt(7, 0, board.getPieceAt(5, 0));
+			    board.setPieceAt(5, 0, null);
+			} else {
+			    board.setPieceAt(7, 7, board.getPieceAt(5, 7));
+			    board.setPieceAt(5, 7, null);
+			}
+		    } else if (pieceAtStartPos.getType() == PieceType.KING && oldX == 4 && newX == 2) {//rokad left
+			if (color == PieceColor.BLACK) {
+			    board.setPieceAt(0, 0, board.getPieceAt(3, 0));
+			    board.setPieceAt(3, 0, null);
+			} else {
+			    board.setPieceAt(0, 7, board.getPieceAt(3, 7));
+			    board.setPieceAt(3, 7, null);
+			}
+		    }
+
+		    board.setPieceAt(oldX, oldY, pieceAtStartPos);
+		    board.setPieceAt(newX, newY, pieceAtEndPos);
+
+		} else { //Move OK
+		    nextTurnChecks(newX, newY, board, color);
+		}
+
+	    }
+
+	}
+	pawnAtEndRow(newX, newY, board, color);
+    }
+
+    private void pawnAtEndRow(final int newX, final int newY, final Board board, final PieceColor color) {
+	if (board.getPieceAt(newX, newY) != null && board.getPieceAt(newX, newY).getType() == PieceType.PAWN &&
+	    (newY == 0 || newY == 7)) {
+	    JList<String> list = new JList<>(new String[] { "Queen", "Bishop", "Rook", "Knight" });
+	    JOptionPane.showMessageDialog(null, list, "Choose!", JOptionPane.PLAIN_MESSAGE);
+
+	    if (list.getSelectedIndices()[0] == 0) {
+		board.placePiece(newX, newY, color, new Queen());
+	    } else if (list.getSelectedIndices()[0] == 1) {
+		board.placePiece(newX, newY, color, new Bishop());
+	    } else if (list.getSelectedIndices()[0] == 2) {
+		board.placePiece(newX, newY, color, new Rook());
+	    } else if (list.getSelectedIndices()[0] == 3) {
+		board.placePiece(newX, newY, color, new Knight());
+
+	    }
+
+	}
+    }
+
+    private void nextTurnChecks(final int newX, final int newY, final Board board, final PieceColor color) {
+	board.getPieceAt(newX,newY).setMoved(true);
+	this.x = newX;
+	this.y = newY;
+	board.notifyListeners();
+	if (color == PieceColor.BLACK) {
+	    board.setTurn(PieceColor.WHITE);
+
+	    if (checkForCheck(PieceColor.WHITE, board)) {
+		if (checkForCheckMate(PieceColor.WHITE, board)) {
+		    String winner = "Black player";
+		    JOptionPane.showMessageDialog(null, winner + " wins", "CheckMate", JOptionPane.INFORMATION_MESSAGE);
+		    System.exit(0);
+
+		}
+		//ljudfil för schack
+		System.out.println("schack vit kung");
+	    }
+
+	} else {
+	    board.setTurn(PieceColor.BLACK);
+
+	    if (checkForCheck(PieceColor.BLACK, board)) {
+		if (checkForCheckMate(PieceColor.BLACK, board)) {
+		    String winner = "White player";
+		    JOptionPane.showMessageDialog(null, winner + " wins", "checkmate", JOptionPane.INFORMATION_MESSAGE);
+		    System.exit(0);
+		}
+		//ljudfil för schack
+		System.out.println("schack svart kung");
+	    }
+	    if (board.getPieceAt(newX, newY).checkForPatt(PieceColor.BLACK, board)) {
+					JOptionPane.showMessageDialog(null, "Black player unable to move, draw", "Draw",
+								      JOptionPane.INFORMATION_MESSAGE);
+					System.exit(0);
+				    }
+	}
+    }
+
+    public boolean isCastling(final int oldX, final int oldY, final int newX, final Board board,
+			      final PieceColor color, final Piece pieceAtStartPos)
+    {
+	boolean check = false;
+	if (pieceAtStartPos.getType() == PieceType.KING && newX == 6) {//rokad right
+	    if (pieceAtStartPos.isMoved()){
+	   	    return true;
+	   	}
+	    if (color == PieceColor.BLACK) {
+		board.setPieceAt(5, 0, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.BLACK, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(5, 0)));
+		    check = true;
+		    board.setPieceAt(5, 0, null);
+		} else {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(5, 0)));
+		    board.setPieceAt(5, 0, board.getPieceAt(7, 0));
+		    board.setPieceAt(7, 0, null);
+		}
+
+
+	    } else {
+		board.setPieceAt(5, 7, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.WHITE, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(5, 7)));
+		    check = true;
+		    board.setPieceAt(5, 7, null);
+		} else {
+		    board.setPieceAt(5, 7, board.getPieceAt(7, 7));
+		    board.setPieceAt(7, 7, null);
+		}
+	    }
+	} else if (pieceAtStartPos.getType() == PieceType.KING  && newX == 2) {//rokad left
+	    if (pieceAtStartPos.isMoved()){
+	   	    return true;
+	   	}
+	    if (color == PieceColor.BLACK) {
+		board.setPieceAt(3, 0, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.BLACK, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(3, 0)));
+		    check = true;
+		    board.setPieceAt(3, 0, null);
+		} else {
+
+		    board.setPieceAt(3, 0, board.getPieceAt(0, 0));
+		    board.setPieceAt(0, 0, null);
+		}
+	    } else {
+		board.setPieceAt(3, 7, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.WHITE, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(3, 7)));
+		    check = true;
+		    board.setPieceAt(3, 7, null);
+		} else {
+		    board.setPieceAt(3, 7, board.getPieceAt(0, 7));
+		    board.setPieceAt(0, 7, null);
+		}
+	    }
+	}
+	return check;
+    }
+
+    public boolean testCastling(final int oldX, final int oldY, final int newX, final Board board,
+				final PieceColor color, final Piece pieceAtStartPos)
+    {
+	boolean check = false;
+
+	if (pieceAtStartPos.getType() == PieceType.KING  && newX == 6) {//rokad right
+	    if (pieceAtStartPos.isMoved()){
+	   	    return true;
+	   	}
+	    if (color == PieceColor.BLACK) {
+		board.setPieceAt(5, 0, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.BLACK, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(5, 0)));
+		    check = true;
+
+		}
+		board.setPieceAt(5, 0, null);
+
+	    } else {
+		board.setPieceAt(5, 7, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.WHITE, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(5, 7)));
+		    check = true;
+		}
+		board.setPieceAt(5, 7, null);
+
+	    }
+	} else if (pieceAtStartPos.getType() == PieceType.KING && newX == 2) {//rokad left
+	    if (pieceAtStartPos.isMoved()){
+	   	    return true;
+	   	}
+	    if (color == PieceColor.BLACK) {
+		board.setPieceAt(3, 0, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.BLACK, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(3, 0)));
+		    check = true;
+		}
+		board.setPieceAt(3, 0, null);
+	    } else {
+		board.setPieceAt(3, 7, (board.getPieceAt(oldX, oldY)));
+		if (checkForCheck(PieceColor.WHITE, board)) {
+		    board.setPieceAt(oldX, oldY, (board.getPieceAt(3, 7)));
+		    check = true;
+		}
+		board.setPieceAt(3, 7, null);
+	    }
+	}
+	return check;
+    }
+
+    public boolean checkForCheck(PieceColor colorOfKing, Board board) {
+	int kingX;
+	int kingY;
+	if (colorOfKing == PieceColor.WHITE) {
+	    kingX = board.getKingWhitePointer().getX();
+	    kingY = board.getKingWhitePointer().getY();
+	} else {
+	    kingX = board.getKingBlackPointer().getX();
+	    kingY = board.getKingBlackPointer().getY();
+	}
+
+
+	for (int x = 0; x < board.getWidth(); x++) {
+	    for (int y = 0; y < board.getHeight(); y++) {
+		if (board.getPieceAt(x, y) != null &&
+		    board.getPieceAt(x, y).getPieceColor() != colorOfKing) {//if piece existst and is an enemy of the king
+		    if (board.getPieceAt(x, y).isMoveLegal(x, y, kingX, kingY, board)) {//if piece is able to take king
+			return true;
+		    }
+		}
+	    }
+	}
+
+	//gå igenom alla rutor om motståndar pjäs, kolla om den kan ta kungen isåfall returna true
+
+	return false;
+    }
+
+    public boolean checkForCheckMate(PieceColor color, Board board) {
+	for (int x = 0; x < board.getWidth(); x++) {
+	    for (int y = 0; y < board.getHeight(); y++) {
+		Piece thepiece = board.getPieceAt(x, y);
+		if (thepiece != null && thepiece.getPieceColor() == color) {
+		    for (int i = 0; i < board.getWidth(); i++) {
+			for (int j = 0; j < board.getWidth(); j++) {
+			    if (thepiece.testMove(x, y, i, j, board) && thepiece.isMoveLegal(x, y, i, j, board)) {
+				return false;
+			    }
+
+			}
+
+		    }
+		}
+
+	    }
+
+	}
+	return true;
+    }
+
+
+    public boolean checkCollision(final int oldX, final int oldY, final int newX, final int newY, Board board) {
+	int leftRight = newX - oldX;
+	int upDown = newY - oldY;
+	if (leftRight > 0) {//right
+	    for (int i = oldX + 1; i < newX; i++) {
+		if (board.getPieceAt(i, oldY) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	} else if (leftRight < 0) {//left
+	    for (int i = oldX - 1; i > newX; i--) {
+		if (board.getPieceAt(i, oldY) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+
+	} else if (upDown > 0) {//down
+	    for (int i = oldY + 1; i < newY; i++) {
+		if (board.getPieceAt(oldX, i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	} else if (upDown < 0) {//up
+	    for (int i = oldY - 1; i > newY; i--) {
+		if (board.getPieceAt(oldX, i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+
+	}
+	System.out.println("fail");
+	return false;
+    }
+
+    public boolean checkCollisionDiagonal(final int oldX, final int oldY, final int newX, final int newY, Board board) {
+	int kx = newX - oldX;
+	int ky = newY - oldY;
+	if (ky > 0 && kx > 0) {// right down
+	    for (int i = 1; i + oldY < newY; i++) {
+		if (board.getPieceAt(oldX + i, oldY + i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	} else if (ky > 0 && kx < 0) {//left down
+	    for (int i = 1; i + oldY < newY; i++) {
+		if (board.getPieceAt(oldX - i, oldY + i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	} else if (ky < 0 && kx < 0) {//left up
+	    for (int i = 1; oldY - i > newY; i++) {
+		if (board.getPieceAt(oldX - i, oldY - i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	} else if (ky < 0 && kx > 0) {//right up
+	    for (int i = 1; oldY - i > newY; i++) {
+		if (board.getPieceAt(oldX + i, oldY - i) != null) {
+		    return true;//collision
+		}
+	    }
+	    return false;
+	}
+	System.out.println("fail");
+	return false;
+    }
+
+}

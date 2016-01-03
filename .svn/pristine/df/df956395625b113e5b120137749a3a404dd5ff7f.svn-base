@@ -1,0 +1,51 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public class Queen extends AbstractPiece
+{
+
+
+    @Override
+    public boolean isMoveLegal(final int oldX, final int oldY, final int newX, final int newY, final PieceColor color,
+			       Board board)
+    {
+	if ((oldX == newX && oldY != newY) || (oldY == newY && oldX != newX)) {
+	    if (board.getPieceAt(newX, newY) != null) { //There is a targetpiece
+		if (board.getPieceAt(newX, newY).getPieceColor() != color) { //Targetpiece is enemypiece
+		    if (!checkCollision(oldX, oldY, newX, newY, board)) {
+			return true;
+		    }
+		} else return false; //Targetpiece is same color
+	    } else {//No targetpiece
+		if (!checkCollision(oldX, oldY, newX, newY, board)) {
+		    return true;
+		}
+	    }
+	}
+	else if ((oldY - newY) == 0) return false;
+	else if (Math.abs(Math.ceil(oldX - newX) / Math.ceil(oldY - newY)) > 1){
+	    return false;}
+	else if (Math.abs((oldX - newX) / (oldY - newY)) == 1) {//move is diagonal
+	    if (board.getPieceAt(newX, newY) != null) {//piece at target location
+		if (board.getPieceAt(newX, newY).getPieceColor() != color) {//enemy piece
+		    if (!checkCollisionDiagonal(oldX, oldY, newX, newY, board)) {
+			return true;
+		    }
+		}
+		return false;
+	    }
+	    if (!checkCollisionDiagonal(oldX, oldY, newX, newY, board)) {
+		return true;
+	    }
+
+	}
+
+	return false;
+    }
+
+    @Override public String toString() {
+	return "Q  ";
+    }
+}

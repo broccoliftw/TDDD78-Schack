@@ -1,0 +1,51 @@
+package schack;
+
+/**
+ * Created by eriro331 on 2014-03-06.
+ */
+public abstract class AbstractPiece implements Piece
+{
+    private int x;
+    private int y;
+    private PieceColor pieceColor;
+
+    public int getX() {
+	return x;
+    }
+
+    public int getY() {
+	return y;
+    }
+
+    public PieceColor getPieceColor() {
+	return pieceColor;
+    }
+
+    public void setX(final int x) {
+	this.x = x;
+    }
+
+    public void setY(final int y) {
+	this.y = y;
+    }
+
+    public void setPieceColor(final PieceColor pieceColor) {
+	this.pieceColor = pieceColor;
+    }
+
+    public void placePiece(int x, int y, PieceColor color, Piece piece, Piece[][] board) {
+    		this.x = x;
+    		this.y = y;
+    		this.pieceColor = color;
+    	    	board[x][y] = piece;
+    }
+
+    public void movePiece(final int oldX, final int oldY, final int newX, final int newY, final PieceColor color, Board board) {
+	if (board.getPieceAt(oldX,oldY).isMoveLegal(oldX, oldY, newX, newY, color, board)){
+
+	    board.setPieceAt(newX,newY,(board.getPieceAt(oldX,oldY)));
+	    board.setPieceAt(oldX, oldY, null);
+
+	}
+    }
+}

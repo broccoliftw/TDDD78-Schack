@@ -1,0 +1,36 @@
+package schack;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * Created by Wilhelm on 2014-03-11.
+ */
+public class ChessFrame extends JFrame {
+    private JFrame frame;
+    ChessFrame(Board board){
+        super("Chess");
+        final JFrame frame = new JFrame("Chess!");
+        this.frame = frame;
+        createMenus();
+        frame.pack();
+        frame.setVisible(true);
+    }
+    private void createMenus(){
+        final JMenu file = new JMenu("File");
+        file.addSeparator();
+        JMenuItem exit = file.add(new JMenuItem("Exit"));
+        exit.addActionListener(new ActionListener()
+        {@Override public void actionPerformed(final ActionEvent e) {
+                int option = JOptionPane.showConfirmDialog(null,"Exit?","Choose",JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) System.exit(0);
+            }
+        });
+
+        file.add(exit);
+        final JMenuBar bar = new JMenuBar();
+        bar.add(file);
+        frame.setJMenuBar(bar);
+    }
+}
